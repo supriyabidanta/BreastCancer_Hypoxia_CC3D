@@ -1,15 +1,13 @@
 <CompuCell3D Revision="0" Version="4.4.0">
-   
+
    <Metadata>
-      
       <!-- Basic properties simulation -->
       <NumberOfProcessors>1</NumberOfProcessors>
       <DebugOutputFrequency>10</DebugOutputFrequency>
       <!-- <NonParallelModule Name="Potts"/> -->
    </Metadata>
-   
+
    <Potts>
-      
       <!-- Basic properties of CPM (GGH) algorithm -->
       <Dimensions x="300" y="300" z="1"/> <!-- 3000um = 300px -->
       <Steps>100000</Steps> <!-- 1min = 10 mcs -->
@@ -18,37 +16,35 @@
       <Boundary_x>Periodic</Boundary_x>
       <Boundary_y>Periodic</Boundary_y>
    </Potts>
-   
+
    <Plugin Name="CellType">
-      
       <!-- Listing all cell types in the simulation -->
       <CellType TypeId="0" TypeName="Medium"/>
       <CellType TypeId="1" TypeName="Necrotic"/>
       <CellType TypeId="2" TypeName="GFP"/>
       <CellType TypeId="3" TypeName="DsRed"/>
    </Plugin>
-   
+
    <Plugin Name="Volume"/>
-   
+
    <Plugin Name="Surface"/>
-   
-   <!-- <Plugin Name="ExternalPotential"> -->
-      
-      <!-- External force applied to cell. Each cell has different force and force components have to be managed in Python. -->
-      <!-- e.g. cell.lambdaVecX=0.5; cell.lambdaVecY=0.1 ; cell.lambdaVecZ=0.3; -->
-      <!-- <Algorithm>PixelBased</Algorithm> -->
-   <!-- </Plugin> -->
-   
-   <Plugin Name="CenterOfMass">
-      <!-- Module tracking center of mass of each cell -->
+
+   <!-- External force applied to cell. Each cell has different force and force components have to be managed in Python. -->
+   <!-- e.g. cell.lambdaVecX=0.5; cell.lambdaVecY=0.1 ; cell.lambdaVecZ=0.3; -->
+   <!--
+   <Plugin Name="ExternalPotential">
+      <Algorithm>PixelBased</Algorithm>
    </Plugin>
-   
-   <!-- <Plugin Name="NeighborTracker"> -->
-      <!-- Module tracking neighboring cells of each cell -->
-   <!-- </Plugin> -->
-   
+   -->
+
+   <Plugin Name="CenterOfMass"></Plugin>
+
+   <!--
+   <Plugin Name="NeighborTracker"></Plugin>
+   -->
+
+   <!--
    <Plugin Name="Contact">
-      <!-- Specification of adhesion energies -->
       <Energy Type1="Medium" Type2="Medium">10.0</Energy>
       <Energy Type1="Medium" Type2="Necrotic">10.0</Energy>
       <Energy Type1="Medium" Type2="GFP">10.0</Energy>
@@ -61,27 +57,32 @@
       <Energy Type1="DsRed" Type2="DsRed">10.0</Energy>
       <NeighborOrder>4</NeighborOrder>
    </Plugin>
-   
-   <Plugin Name="Chemotaxis">    
-      <!-- You may repeat ChemicalField element for each chemical field declared in the PDE solvers -->
-      <!-- Specification of chemotaxis properties of select cell types. -->
+   -->
+
+   <!-- You may repeat ChemicalField element for each chemical field declared in the PDE solvers -->
+   <!-- Specification of chemotaxis properties of select cell types. -->
+   <!--
+   <Plugin Name="Chemotaxis">
       <ChemicalField Name="oxygen">
          <ChemotaxisByType ChemotactTowards="0.1719" Lambda="0.002938" Type="DsRed"/>
          <ChemotaxisByType ChemotactTowards="0.1791" Lambda="0.004755" Type="GFP"/>
       </ChemicalField>
    </Plugin>
-   
+   -->
+
+   <!-- Specification of secretion properties of select cell types. -->
+   <!-- You may repeat Field element for each chemical field declared in the PDE solvers -->
+   <!-- Specification of secretion properties of individual cells can be done in Python -->
+   <!--
    <Plugin Name="Secretion">
-      <!-- Specification of secretion properties of select cell types. -->
-      <!-- You may repeat Field element for each chemical field declared in the PDE solvers -->
-      <!-- Specification of secretion properties of individual cells can be done in Python -->
       <Field Name="oxygen">
          <Secretion Type="Necrotic">-1.0</Secretion>
          <Secretion Type="DsRed">-1.0</Secretion>
          <Secretion Type="GFP">-1.0</Secretion>
       </Field>
    </Plugin>
-   
+   -->
+
    <Steppable Type="DiffusionSolverFE">
       <!-- Specification of PDE solvers -->
       <DiffusionField Name="oxygen">
@@ -101,7 +102,7 @@
          </DiffusionData>
          <SecretionData>
             <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
-            
+
             <!-- Uniform secretion Definition -->
             <!-- <Secretion Type="Necrotic">0.1</Secretion> -->
             <!-- <Secretion Type="GFP">0.1</Secretion> -->
@@ -127,7 +128,7 @@
          </BoundaryConditions>
       </DiffusionField>
    </Steppable>
-   
+
    <Steppable Type="BlobInitializer">
       <!-- Initial layout of cells in the form of spherical (circular in 2D) blob -->
       <Region>
