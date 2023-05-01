@@ -1,0 +1,5 @@
+<Simulation version="4.4.0">
+   <XMLScript Type="XMLScript">Simulation/BC_Hypoxia.xml</XMLScript>
+   <PythonScript Type="PythonScript">Simulation/BC_Hypoxia.py</PythonScript>
+   <Resource Type="Python">Simulation/BC_HypoxiaSteppables.py</Resource>
+</Simulation>
