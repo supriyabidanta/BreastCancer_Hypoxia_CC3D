@@ -2,19 +2,24 @@
 
    <Metadata>
       <!-- Basic properties simulation -->
-      <NumberOfProcessors>1</NumberOfProcessors>
-      <DebugOutputFrequency>10</DebugOutputFrequency>
+      <NumberOfProcessors>8</NumberOfProcessors>
+      <DebugOutputFrequency>100</DebugOutputFrequency>
       <!-- <NonParallelModule Name="Potts"/> -->
    </Metadata>
 
+   <!-- definition time: 1[mcs] = 1/10[min] = PhysiCell dt_mechanics -->
+   <!-- definition length: 1[px] = 1[um] -->
+
    <Potts>
       <!-- Basic properties of CPM (GGH) algorithm -->
-      <Dimensions x="300" y="300" z="1"/> <!-- 3000um = 300px -->
-      <Steps>100000</Steps> <!-- 1min = 10 mcs -->
+      <Dimensions x="300" y="300" z="1"/> <!-- 3000[um] = 3000[px] -->
+      <Steps>78000</Steps> <!-- 78000[mcs] = 7800[min] = 130[h] = 5.416667[d] -->
       <Temperature>10.0</Temperature>
       <NeighborOrder>2</NeighborOrder>
+      <!--
       <Boundary_x>Periodic</Boundary_x>
       <Boundary_y>Periodic</Boundary_y>
+      -->
    </Potts>
 
    <Plugin Name="CellType">
@@ -27,7 +32,9 @@
 
    <Plugin Name="Volume"/>
 
+   <!--
    <Plugin Name="Surface"/>
+   -->
 
    <!-- External force applied to cell. Each cell has different force and force components have to be managed in Python. -->
    <!-- e.g. cell.lambdaVecX=0.5; cell.lambdaVecY=0.1 ; cell.lambdaVecZ=0.3; -->
@@ -85,24 +92,23 @@
 
    <Steppable Type="DiffusionSolverFE">
       <!-- Specification of PDE solvers -->
+
       <DiffusionField Name="oxygen">
          <DiffusionData>
             <FieldName>oxygen</FieldName>
-            <GlobalDiffusionConstant>1000</GlobalDiffusionConstant> <!-- 100000microm per moin  = 1000px/mcs -->
-            <GlobalDecayConstant>0.01</GlobalDecayConstant>
-            <!-- Additional options are: -->
-            <!-- <InitialConcentrationExpression>x*y</InitialConcentrationExpression> -->
-            <!-- <ConcentrationFileName>INITIAL CONCENTRATION FIELD - typically a file with path Simulation/NAME_OF_THE_FILE.txt</ConcentrationFileName> -->
-            <DiffusionCoefficient CellType="Necrotic">0.1</DiffusionCoefficient>
-            <DiffusionCoefficient CellType="GFP">0.1</DiffusionCoefficient>
-            <DiffusionCoefficient CellType="DsRed">0.1</DiffusionCoefficient>
-            <DecayCoefficient CellType="Necrotic">0.0001</DecayCoefficient>
-            <DecayCoefficient CellType="GFP">0.0001</DecayCoefficient>
-            <DecayCoefficient CellType="DsRed">0.0001</DecayCoefficient>
+            <GlobalDiffusionConstant>1000</GlobalDiffusionConstant> <!-- 100000[um/min] = 1000[px/mcs] -->
+            <GlobalDecayConstant>0.01</GlobalDecayConstant>  <!-- 0.1[1/min] = 0.01[1/mcs] -->
+            <InitialConcentrationExpression>45.94</InitialConcentrationExpression>  <!-- 45.94[mmHg] -->
+            <DiffusionCoefficient CellType="Necrotic">1000</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="GFP">1000</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="DsRed">1000</DiffusionCoefficient>
+            <DecayCoefficient CellType="Necrotic">1.0</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] -->
+            <DecayCoefficient CellType="GFP">1.0</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] -->
+            <DecayCoefficient CellType="DsRed">1.0</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] -->
          </DiffusionData>
-         <SecretionData>
-            <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
 
+         <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
+         <SecretionData>
             <!-- Uniform secretion Definition -->
             <!-- <Secretion Type="Necrotic">0.1</Secretion> -->
             <!-- <Secretion Type="GFP">0.1</Secretion> -->
@@ -110,23 +116,25 @@
             <!-- <SecretionOnContact SecreteOnContactWith="Necrotic,GFP,DsRed" Type="DsRed">0.2</SecretionOnContact> -->
             <!-- <ConstantConcentration Type="DsRed">0.1</ConstantConcentration> -->
          </SecretionData>
+
          <BoundaryConditions>
             <Plane Axis="X">
-               <ConstantValue PlanePosition="Min" Value="10.0"/>
-               <ConstantValue PlanePosition="Max" Value="5.0"/>
+               <ConstantValue PlanePosition="Min" Value="45.94"/>
+               <ConstantValue PlanePosition="Max" Value="45.94"/>
                <!-- Other options are (examples): -->
                <!-- <Periodic/> -->
                <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
             <Plane Axis="Y">
-               <ConstantDerivative PlanePosition="Min" Value="10.0"/>
-               <ConstantDerivative PlanePosition="Max" Value="5.0"/>
+               <ConstantValue PlanePosition="Min" Value="45.94"/>
+               <ConstantValue PlanePosition="Max" Value="45.94"/>
                <!-- Other options are (examples): -->
                <!-- <Periodic/> -->
-               <!-- <ConstantValue PlanePosition="Min" Value="10.0"/> -->
+               <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
          </BoundaryConditions>
       </DiffusionField>
+
    </Steppable>
 
    <Steppable Type="BlobInitializer">
@@ -135,7 +143,7 @@
          <Center x="150" y="150" z="0"/>
          <Radius>25</Radius>
          <Gap>0</Gap>
-         <Width>7</Width>
+         <Width>7</Width>  <!-- ((2492[um**3])**(1/3) / 10[px/um]) = 1.356[px] -->  <!-- ((2492[um**3])**(1/3) / 2[px/um]) = 6.779[px] -->
          <Types>DsRed</Types>
       </Region>
    </Steppable>

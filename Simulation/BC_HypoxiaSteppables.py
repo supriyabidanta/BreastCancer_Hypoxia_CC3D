@@ -11,7 +11,9 @@ class BC_HypoxiaSteppable(SteppableBasePy):
         """
         Called before MCS=0 while building the initial simulation
         """
-        pass
+        for cell in self.cell_list:
+            cell.targetVolume = 46  # ((2492 [um**3])**(1/3) / 2[px/um])**(2) = 45.952[px**2]
+            cell.lambdaVolume = 4
 
     def step(self, mcs):
         """
