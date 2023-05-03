@@ -16,10 +16,9 @@
       <Steps>78000000</Steps> <!-- 78000[mcs] = 7800[min] = 130[h] = 5.416667[d] * 10**(3)-->
       <Temperature>10.0</Temperature>
       <NeighborOrder>2</NeighborOrder>
-      <!--
       <Boundary_x>Periodic</Boundary_x>
       <Boundary_y>Periodic</Boundary_y>
-      -->
+
    </Potts>
 
    <Plugin Name="CellType">
@@ -38,11 +37,10 @@
 
    <!-- External force applied to cell. Each cell has different force and force components have to be managed in Python. -->
    <!-- e.g. cell.lambdaVecX=0.5; cell.lambdaVecY=0.1 ; cell.lambdaVecZ=0.3; -->
-   <!--
+
    <Plugin Name="ExternalPotential">
       <Algorithm>PixelBased</Algorithm>
    </Plugin>
-   -->
 
    <Plugin Name="CenterOfMass"></Plugin>
 
@@ -50,7 +48,7 @@
    <Plugin Name="NeighborTracker"></Plugin>
    -->
 
-   <!--
+
    <Plugin Name="Contact">
       <Energy Type1="Medium" Type2="Medium">10.0</Energy>
       <Energy Type1="Medium" Type2="Necrotic">10.0</Energy>
@@ -64,31 +62,30 @@
       <Energy Type1="DsRed" Type2="DsRed">10.0</Energy>
       <NeighborOrder>4</NeighborOrder>
    </Plugin>
-   -->
+
 
    <!-- You may repeat ChemicalField element for each chemical field declared in the PDE solvers -->
    <!-- Specification of chemotaxis properties of select cell types. -->
-   <!--
+
    <Plugin Name="Chemotaxis">
       <ChemicalField Name="oxygen">
-         <ChemotaxisByType ChemotactTowards="0.1719" Lambda="0.002938" Type="DsRed"/>
-         <ChemotaxisByType ChemotactTowards="0.1791" Lambda="0.004755" Type="GFP"/>
+         <ChemotaxisByType ChemotactTowards="Medium" Lambda="293" Type="DsRed"/>
+         <ChemotaxisByType ChemotactTowards="DsRed" Lambda="475" Type="GFP"/>
       </ChemicalField>
    </Plugin>
-   -->
 
    <!-- Specification of secretion properties of select cell types. -->
    <!-- You may repeat Field element for each chemical field declared in the PDE solvers -->
    <!-- Specification of secretion properties of individual cells can be done in Python -->
-   <!--
+
    <Plugin Name="Secretion">
       <Field Name="oxygen">
-         <Secretion Type="Necrotic">-1.0</Secretion>
-         <Secretion Type="DsRed">-1.0</Secretion>
-         <Secretion Type="GFP">-1.0</Secretion>
+         <!-- <Secretion Type="Necrotic">0.1</Secretion> -->
+         <Secretion Type="DsRed">0.1</Secretion>
+         <Secretion Type="GFP">0.1</Secretion>
       </Field>
    </Plugin>
-   -->
+
 
    <Steppable Type="DiffusionSolverFE">
       <!-- Specification of PDE solvers -->
@@ -123,14 +120,14 @@
                <ConstantValue PlanePosition="Min" Value="45.94"/>  <!-- 45.94 mmHG -->
                <ConstantValue PlanePosition="Max" Value="45.94"/>
                <!-- Other options are (examples): -->
-               <!-- <Periodic/> -->
+               <Periodic/>
                <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
             <Plane Axis="Y">
                <ConstantValue PlanePosition="Min" Value="45.94"/>
                <ConstantValue PlanePosition="Max" Value="45.94"/>
                <!-- Other options are (examples): -->
-               <!-- <Periodic/> -->
+               <Periodic/>
                <!-- <ConstantDerivative PlanePosition="Min" Value="10.0"/> -->
             </Plane>
          </BoundaryConditions>
