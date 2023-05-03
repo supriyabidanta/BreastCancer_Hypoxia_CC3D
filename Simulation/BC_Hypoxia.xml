@@ -80,9 +80,10 @@
 
    <Plugin Name="Secretion">
       <Field Name="oxygen">
-         <!-- <Secretion Type="Necrotic">0.1</Secretion> -->
-         <Secretion Type="DsRed">0.1</Secretion>
-         <Secretion Type="GFP">0.1</Secretion>
+         <!-- <Secretion Type="Necrotic">0.1</Secretion> &ndash;&gt;  -->
+
+         <!-- <Secretion Type="DsRed">0.1</Secretion> -->
+         <!-- <Secretion Type="GFP">0.1</Secretion> -->
       </Field>
    </Plugin>
 
