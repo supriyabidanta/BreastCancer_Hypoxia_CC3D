@@ -25,8 +25,9 @@
       <!-- Listing all cell types in the simulation -->
       <CellType TypeId="0" TypeName="Medium"/>
       <CellType TypeId="1" TypeName="Necrotic"/>
-      <CellType TypeId="2" TypeName="GFP"/>
-      <CellType TypeId="3" TypeName="DsRed"/>
+      <CellType TypeId="2" TypeName="Hypoxia"/>
+      <CellType TypeId="3" TypeName="GFP"/>
+      <CellType TypeId="4" TypeName="DsRed"/>
    </Plugin>
 
    <Plugin Name="Volume"/>
@@ -38,9 +39,11 @@
    <!-- External force applied to cell. Each cell has different force and force components have to be managed in Python. -->
    <!-- e.g. cell.lambdaVecX=0.5; cell.lambdaVecY=0.1 ; cell.lambdaVecZ=0.3; -->
 
+   <!--
    <Plugin Name="ExternalPotential">
       <Algorithm>PixelBased</Algorithm>
    </Plugin>
+   -->
 
    <Plugin Name="CenterOfMass"></Plugin>
 
@@ -48,7 +51,7 @@
    <Plugin Name="NeighborTracker"></Plugin>
    -->
 
-
+   <!--
    <Plugin Name="Contact">
       <Energy Type1="Medium" Type2="Medium">10.0</Energy>
       <Energy Type1="Medium" Type2="Necrotic">10.0</Energy>
@@ -62,31 +65,31 @@
       <Energy Type1="DsRed" Type2="DsRed">10.0</Energy>
       <NeighborOrder>4</NeighborOrder>
    </Plugin>
-
+   -->
 
    <!-- You may repeat ChemicalField element for each chemical field declared in the PDE solvers -->
    <!-- Specification of chemotaxis properties of select cell types. -->
 
    <Plugin Name="Chemotaxis">
       <ChemicalField Name="oxygen">
-         <ChemotaxisByType ChemotactTowards="Medium" Lambda="293" Type="DsRed"/>
-         <ChemotaxisByType ChemotactTowards="DsRed" Lambda="475" Type="GFP"/>
+         <ChemotaxisByType ChemotactTowards="Medium" Lambda="0.00001469" Type="DsRed"/>
+         <ChemotaxisByType ChemotactTowards="Medium" Lambda="0.00001469" Type="Hypoxia"/>
+         <ChemotaxisByType ChemotactTowards="Medium" Lambda="0.000023775" Type="GFP"/>
       </ChemicalField>
    </Plugin>
 
    <!-- Specification of secretion properties of select cell types. -->
    <!-- You may repeat Field element for each chemical field declared in the PDE solvers -->
    <!-- Specification of secretion properties of individual cells can be done in Python -->
-
+   <!-- <Secretion Type="Necrotic">0.1</Secretion> &ndash;&gt;  -->
+   <!-- <Secretion Type="DsRed">0.1</Secretion> -->
+   <!-- <Secretion Type="GFP">0.1</Secretion> -->
+   <!--
    <Plugin Name="Secretion">
       <Field Name="oxygen">
-         <!-- <Secretion Type="Necrotic">0.1</Secretion> &ndash;&gt;  -->
-
-         <!-- <Secretion Type="DsRed">0.1</Secretion> -->
-         <!-- <Secretion Type="GFP">0.1</Secretion> -->
       </Field>
    </Plugin>
-
+   -->
 
    <Steppable Type="DiffusionSolverFE">
       <!-- Specification of PDE solvers -->
@@ -94,15 +97,17 @@
       <DiffusionField Name="oxygen">
          <DiffusionData>
             <FieldName>oxygen</FieldName>
-            <GlobalDiffusionConstant>0.5</GlobalDiffusionConstant> <!-- 100000[um/min] = 5000[px/mcs] * 10**(-3) -->
+            <GlobalDiffusionConstant>5.0</GlobalDiffusionConstant> <!-- 100000[um/min] = 50000[px/min] = 5000[px/min] * 10**(-3) -->
             <GlobalDecayConstant>0.00001</GlobalDecayConstant>  <!-- 0.1[1/min] = 0.01[1/mcs] * 10**(-3) -->
             <InitialConcentrationExpression>45.94</InitialConcentrationExpression>  <!-- 45.94[mmHg] -->
-            <DiffusionCoefficient CellType="Necrotic">0.5</DiffusionCoefficient>
-            <DiffusionCoefficient CellType="GFP">0.5</DiffusionCoefficient>
-            <DiffusionCoefficient CellType="DsRed">0.5</DiffusionCoefficient>
-            <DecayCoefficient CellType="Necrotic">000.1</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
-            <DecayCoefficient CellType="GFP">000.1</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
-            <DecayCoefficient CellType="DsRed">000.1</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
+            <DiffusionCoefficient CellType="Necrotic">5.0</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="Hypoxia">5.0</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="GFP">5.0</DiffusionCoefficient>
+            <DiffusionCoefficient CellType="DsRed">5.0</DiffusionCoefficient>
+            <DecayCoefficient CellType="Necrotic">0.0</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
+            <DecayCoefficient CellType="Hypoxia">0.001</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
+            <DecayCoefficient CellType="GFP">0.001</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
+            <DecayCoefficient CellType="DsRed">0.001</DecayCoefficient>  <!-- 10[1/min] = 1[1/mcs] * 10**(-3) -->
          </DiffusionData>
 
          <!-- When secretion is defined inside DissufionSolverFE all secretion constants are scaled automaticaly to account for the extra calls to the diffusion step when handling large diffusion constants -->
